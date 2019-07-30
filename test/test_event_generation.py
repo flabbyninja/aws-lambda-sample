@@ -5,15 +5,18 @@ import json
 
 class TestEventGeneration(TestCase):
 
+    def assembleEventPayload(self, contents):
+        return {"queryStringParameters": contents}
+
     def test_event_valid(self):
         valid_event_response = json.loads(
             r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello John Smith, you 25 year old genius!\"}"}')
 
-        lambda_output = lambda_handler({
+        lambda_output = lambda_handler(self.assembleEventPayload({
             "first_name": "John",
             "last_name": "Smith",
             "age": 25
-        }, None)
+        }), None)
 
         self.assertEqual(valid_event_response, lambda_output)
 
@@ -21,11 +24,11 @@ class TestEventGeneration(TestCase):
         missing_firstname_response = json.loads(
             r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello Smith, you 25 year old genius!\"}"}')
 
-        lambda_output = lambda_handler({
+        lambda_output = lambda_handler(self.assembleEventPayload({
             "random_key": "John",
             "last_name": "Smith",
             "age": 25
-        }, None)
+        }), None)
 
         self.assertEqual(missing_firstname_response, lambda_output)
 
@@ -33,12 +36,11 @@ class TestEventGeneration(TestCase):
         missing_lastname_response = json.loads(
             r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello John, you 25 year old genius!\"}"}')
 
-        lambda_output = lambda_handler({
+        lambda_output = lambda_handler(self.assembleEventPayload({
             "first_name": "John",
             "random_key": "Smith",
-            "last_name": "",
             "age": 25
-        }, None)
+        }), None)
 
         self.assertEqual(missing_lastname_response, lambda_output)
 
@@ -46,11 +48,11 @@ class TestEventGeneration(TestCase):
         missing_firstname_response = json.loads(
             r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello Anonymous, you 25 year old genius!\"}"}')
 
-        lambda_output = lambda_handler({
+        lambda_output = lambda_handler(self.assembleEventPayload({
             "random_key": "",
             "another_random_key": "",
             "age": 25
-        }, None)
+        }), None)
 
         self.assertEqual(missing_firstname_response, lambda_output)
 
@@ -58,11 +60,11 @@ class TestEventGeneration(TestCase):
         missing_firstname_response = json.loads(
             r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello Anonymous, you 25 year old genius!\"}"}')
 
-        lambda_output = lambda_handler({
+        lambda_output = lambda_handler(self.assembleEventPayload({
             "first_name": "",
             "last_name": "",
             "age": 25
-        }, None)
+        }), None)
 
         self.assertEqual(missing_firstname_response, lambda_output)
 
@@ -71,11 +73,11 @@ class TestEventGeneration(TestCase):
         missing_age_response = json.loads(
             r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello John Smith, you genius!\"}"}')
 
-        lambda_output = lambda_handler({
+        lambda_output = lambda_handler(self.assembleEventPayload({
             "first_name": "John",
             "last_name": "Smith",
             "random_key": 25
-        }, None)
+        }), None)
 
         self.assertEqual(missing_age_response, lambda_output)
 
@@ -83,10 +85,10 @@ class TestEventGeneration(TestCase):
         missing_all_response = json.loads(
             r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello Anonymous, you genius!\"}"}')
 
-        lambda_output = lambda_handler({
+        lambda_output = lambda_handler(self.assembleEventPayload({
             "random1": "blah",
             "random2": "blah",
             "random3": 0
-        }, None)
+        }), None)
 
         self.assertEqual(missing_all_response, lambda_output)
