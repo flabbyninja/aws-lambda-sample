@@ -48,8 +48,45 @@ class TestEventGeneration(TestCase):
 
         lambda_output = lambda_handler({
             "random_key": "",
+            "another_random_key": "",
+            "age": 25
+        }, None)
+
+        self.assertEqual(missing_firstname_response, lambda_output)
+
+    def test_event_blank_wholename(self):
+        missing_firstname_response = json.loads(
+            r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello Anonymous, you 25 year old genius!\"}"}')
+
+        lambda_output = lambda_handler({
+            "first_name": "",
             "last_name": "",
             "age": 25
         }, None)
 
         self.assertEqual(missing_firstname_response, lambda_output)
+
+
+    def test_event_missing_age(self):
+        missing_age_response = json.loads(
+            r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello John Smith, you genius!\"}"}')
+
+        lambda_output = lambda_handler({
+            "first_name": "John",
+            "last_name": "Smith",
+            "random_key": 25
+        }, None)
+
+        self.assertEqual(missing_age_response, lambda_output)
+
+    def test_event_missing_all(self):
+        missing_all_response = json.loads(
+            r'{"isBase64Encoded": false, "statusCode": 200, "headers": {"Content-Type": "application/json"}, "body": "{\"message\": \"Hello Anonymous, you genius!\"}"}')
+
+        lambda_output = lambda_handler({
+            "random1": "blah",
+            "random2": "blah",
+            "random3": 0
+        }, None)
+
+        self.assertEqual(missing_all_response, lambda_output)

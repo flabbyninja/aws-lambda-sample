@@ -13,7 +13,10 @@ def construct_name(first_name, last_name):
 
 
 def create_message(first_name, last_name, age):
-    message = 'Hello {}, you {} year old genius!'.format(construct_name(first_name, last_name), age)
+    age_text = ''
+    if age:
+        age_text = ' {} year old'.format(age)
+    message = 'Hello {}, you{} genius!'.format(construct_name(first_name, last_name), age_text)
     return {
         'message': message
     }
