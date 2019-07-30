@@ -36,12 +36,14 @@ def clean_param(p):
 
 
 def lambda_handler(event, context):
+    qsp = event.get('queryStringParameters')
+    first_name, last_name, age = '', '', ''
 
-    first_name = clean_param(event.get('first_name'))
-    last_name = clean_param(event.get('last_name'))
-    age = clean_param(event.get('age'))
+    if qsp:
+        first_name = clean_param(qsp.get('first_name'))
+        last_name = clean_param(qsp.get('last_name'))
+        age = clean_param(qsp.get('age'))
 
     message = create_message(first_name, last_name, age)
-    print(message)
     response = generate_lambda_proxy_response(200, message)
     return response
