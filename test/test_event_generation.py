@@ -1,9 +1,18 @@
 from unittest import TestCase
 from hello import lambda_handler
 import json
+import logging
+import sys
+
+logger = logging.getLogger()
+logger.level = logging.ERROR
 
 
 class TestEventGeneration(TestCase):
+
+    def setUp(self):
+        stream_handler = logging.StreamHandler(sys.stdout)
+        logger.addHandler(stream_handler)
 
     def assembleEventPayload(self, contents):
         return {"queryStringParameters": contents}
@@ -67,7 +76,6 @@ class TestEventGeneration(TestCase):
         }), None)
 
         self.assertEqual(missing_firstname_response, lambda_output)
-
 
     def test_event_missing_age(self):
         missing_age_response = json.loads(
