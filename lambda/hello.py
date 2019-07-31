@@ -50,4 +50,5 @@ def lambda_handler(event, context):
 
     message = create_message(first_name, last_name, age)
     response = generate_lambda_proxy_response(200, message)
+    logger.info("Returning assembled message: {}".format(message))
     return response
