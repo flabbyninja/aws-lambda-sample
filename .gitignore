@@ -2,3 +2,5 @@
 **/venv
 frontend-wild
 **/.terraform
+**/*.tfstate
+**/*.tfstate.backup
