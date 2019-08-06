@@ -42,10 +42,6 @@ resource "aws_security_group" "instance" {
   }
 }
 
-output "public_ip" {
-    value = "${join(", ", aws_instance.example.*.public_ip)}"
-}
-
 # define a role with a trust relationship to Lambda
 resource "aws_iam_role" "lambda_execution" {
   name = "lambda_sample_lambda_execution"
