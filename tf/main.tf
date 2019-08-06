@@ -2,6 +2,8 @@ provider "aws" {
     region = "eu-west-1"
 }
 
+data "aws_caller_identity" "current" {}
+
 variable "server_port" {
   description = "The port the server will use for HTTP requests"
   type        = number
@@ -75,7 +77,7 @@ TRUST_RELATIONSHIP
 }
 
 # Bind basic lambda execution policy to the role
-resource "aws_iam_role_policy_attachment" "test-attach" {
+resource "aws_iam_role_policy_attachment" "attach_lambda_execute" {
   role = "${aws_iam_role.lambda_execution.name}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
@@ -103,4 +105,35 @@ TRUST_RELATIONSHIP
   tags = {
     tag-key = "terraform"
   }
+}
+
+# Create policy that allows the correct role to be assumed
+resource "aws_iam_policy" "assume_user_policy" {
+  name        = "lambda_sample_api_gateway_assume_user_policy"
+  description = "Policy to allow user role to be assumed via STS for lambda-sample"
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/user/sjtraining"
+    }
+  ]
+}
+POLICY
+}
+
+# Bind ability to assume to correct user to the role
+resource "aws_iam_role_policy_attachment" "attach_api_gateway_user" {
+  role = "${aws_iam_role.api_gateway_cloudwatch.name}"
+  policy_arn = "${aws_iam_policy.assume_user_policy.arn}"
+}
+
+# Bind API Gateway AWS Managed Cloudwatch push policy to the role
+resource "aws_iam_role_policy_attachment" "attach_cloudwatch_push" {
+  role = "${aws_iam_role.api_gateway_cloudwatch.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
 }
