@@ -11,12 +11,12 @@ variable "server_port" {
 resource "aws_instance" "example" {
     ami           = "ami-0bbc25e23a7640b9b"
     instance_type = "t2.micro"
-    key_name = "dev-key"
+    key_name      = "dev-key"
     vpc_security_group_ids = [aws_security_group.instance.id]
-    user_data = "${file("install_httpd.sh")}"
+    user_data     = "${file("install_httpd.sh")}"
 
     tags = {
-        Name    = "terraform-example"
+        Name      = "terraform-example"
     }
 }
 
@@ -48,4 +48,59 @@ resource "aws_security_group" "instance" {
 output "public_ip" {
     value = aws_instance.example.public_ip
     description = "Public IP of the web server"
+}
+
+# define a role with a trust relationship to Lambda
+resource "aws_iam_role" "lambda_execution" {
+  name = "lambda_sample_lambda_execution"
+  description = "Allow base execution of lambdas"
+  assume_role_policy = <<TRUST_RELATIONSHIP
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+TRUST_RELATIONSHIP
+
+  tags = {
+    tag-key = "terraform"
+  }
+}
+
+# Bind basic lambda execution policy to the role
+resource "aws_iam_role_policy_attachment" "test-attach" {
+  role = "${aws_iam_role.lambda_execution.name}"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+# define a role with a trust relationship to API Gateway
+resource "aws_iam_role" "api_gateway_cloudwatch" {
+  name = "lambda_sample_api_gateway_cloudwatch"
+  description = "Allow API Gateway to have access to Cloudwatch to write logs"
+  assume_role_policy = <<TRUST_RELATIONSHIP
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+TRUST_RELATIONSHIP
+
+  tags = {
+    tag-key = "terraform"
+  }
 }
