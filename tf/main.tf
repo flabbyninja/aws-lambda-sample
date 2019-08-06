@@ -4,13 +4,8 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-variable "server_port" {
-  description = "The port the server will use for HTTP requests"
-  type        = number
-  default     = 80
-}
-
 resource "aws_instance" "example" {
+    count         = "${var.create_ec2 == "true" ? var.instance_count : 0}"
     ami           = "ami-0bbc25e23a7640b9b"
     instance_type = "t2.micro"
     key_name      = "dev-key"
@@ -18,7 +13,7 @@ resource "aws_instance" "example" {
     user_data     = "${file("install_httpd.sh")}"
 
     tags = {
-        Name      = "terraform-example"
+        Name      = "terraform-example-${count.index}"
     }
 }
 
@@ -48,8 +43,7 @@ resource "aws_security_group" "instance" {
 }
 
 output "public_ip" {
-    value = aws_instance.example.public_ip
-    description = "Public IP of the web server"
+    value = "${join(", ", aws_instance.example.*.public_ip)}"
 }
 
 # define a role with a trust relationship to Lambda
@@ -119,7 +113,7 @@ resource "aws_iam_policy" "assume_user_policy" {
       {
         "Effect": "Allow",
         "Action": "sts:AssumeRole",
-        "Resource": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/user/sjtraining"
+        "Resource": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/user/${var.assume_user_role}"
     }
   ]
 }
