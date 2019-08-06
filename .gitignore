@@ -4,3 +4,4 @@ frontend-wild
 **/.terraform
 **/*.tfstate
 **/*.tfstate.backup
+main.auto.tfvars
