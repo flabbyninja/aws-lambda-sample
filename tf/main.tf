@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_instance" "example" {
-    count         = "${var.create_ec2 == "true" ? var.instance_count : 0}"
+    count         = "${var.instance_count >= 1 ? var.instance_count : 0}"
     ami           = "ami-0bbc25e23a7640b9b"
     instance_type = "t2.micro"
     key_name      = "dev-key"

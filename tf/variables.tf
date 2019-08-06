@@ -1,9 +1,5 @@
 variable "assume_user_role" {
-    type = "string"
-}
-
-variable "create_ec2" {
-    type = "string"
+    type = string
 }
 
 variable "instance_count" {
