@@ -4,42 +4,11 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-resource "aws_instance" "example" {
-    count         = "${var.instance_count >= 1 ? var.instance_count : 0}"
-    ami           = "ami-0bbc25e23a7640b9b"
-    instance_type = "t2.micro"
-    key_name      = "dev-key"
-    vpc_security_group_ids = [aws_security_group.instance.id]
-    user_data     = "${file(var.user_data_script)}"
-
-    tags = {
-        Name      = "terraform-example-${count.index}"
-    }
-}
-
-resource "aws_security_group" "instance" {
-  name = "terraform-example-instance" 
-  
-  ingress {
-    from_port   = var.server_port
-    to_port     = var.server_port
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = var.server_port
-    to_port     = var.server_port
-    protocol    = "tcp"
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+module "provision-ec2-apache"{
+  source = "./modules/ec2-apache"
+  instance_count = "${var.instance_count}"
+  user_data_script = "${var.user_data_script}"
+  server_port = "${var.server_port}"
 }
 
 # define a role with a trust relationship to Lambda
@@ -75,7 +44,7 @@ resource "aws_iam_role_policy_attachment" "attach_lambda_execute" {
 # define a role with a trust relationship to API Gateway
 resource "aws_iam_role" "api_gateway_cloudwatch" {
   name = "lambda_sample_api_gateway_cloudwatch"
-  description = "Allow API Gateway to have access to Cloudwatch to write logs"
+  description = "Give API Gateway access to Cloudwatch to write logs"
   assume_role_policy = <<TRUST_RELATIONSHIP
 {
   "Version": "2012-10-17",
