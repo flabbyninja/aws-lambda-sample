@@ -10,7 +10,7 @@ resource "aws_instance" "example" {
     instance_type = "t2.micro"
     key_name      = "dev-key"
     vpc_security_group_ids = [aws_security_group.instance.id]
-    user_data     = "${file("install_httpd.sh")}"
+    user_data     = "${file(var.user_data_script)}"
 
     tags = {
         Name      = "terraform-example-${count.index}"
