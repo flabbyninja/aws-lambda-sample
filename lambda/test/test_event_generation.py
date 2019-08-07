@@ -1,5 +1,5 @@
 from unittest import TestCase
-from hello import lambda_handler
+from service import lambda_handler
 import json
 import logging
 import sys
