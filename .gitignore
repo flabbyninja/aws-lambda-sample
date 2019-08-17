@@ -5,3 +5,5 @@ frontend-wild
 *.tfstate
 *.tfstate.backup
 main.auto.tfvars
+__pycache__
+lambda/dist
