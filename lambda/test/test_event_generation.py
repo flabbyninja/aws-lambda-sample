@@ -1,8 +1,9 @@
 from unittest import TestCase
-from service import lambda_handler
 import json
 import logging
 import sys
+
+from service import lambda_handler
 
 logger = logging.getLogger()
 logger.level = logging.ERROR

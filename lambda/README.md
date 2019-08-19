@@ -20,6 +20,12 @@ This runs via node, so have an up-to-date version of node and np available in th
 
 Configure details of the service in `demoproject/config.yaml`
 
+## Running Unit Tests
+
+From lambda subdir, run the following:
+
+`python -m unittest discover -s test`
+
 ## Running locally and testing
 
 This will invoke a lambda called `hello` locally, showing the log output, and using the events source from the file `events/valid.json`
