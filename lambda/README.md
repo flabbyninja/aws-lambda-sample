@@ -20,6 +20,17 @@ This runs via node, so have an up-to-date version of node and np available in th
 
 Configure details of the service in `demoproject/config.yaml`
 
+### Enabling Python Dependencies
+
+Install plugin to ensure the right dependencies can be pulled into lambda, based on requirements.txt contents
+
+`sls plugin install -n serverless-python-requirements`
+
+To enable, add the following lines to the end of serverless.yml
+```
+plugins:
+  - serverless-python-requirements
+```
 ## Running Unit Tests
 
 From lambda subdir, run the following:

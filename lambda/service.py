@@ -1,5 +1,7 @@
 import json
 import logging
+import requests
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -52,3 +54,8 @@ def lambda_handler(event, context):
     response = generate_lambda_proxy_response(200, message)
     logger.info("Returning assembled message: {}".format(message))
     return response
+
+
+def web_handler(event, context):
+    r = requests.get("https://news.ycombinator.com/news")
+    return {"content": r.text}

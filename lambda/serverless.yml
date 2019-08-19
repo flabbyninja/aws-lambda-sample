@@ -2,13 +2,20 @@ service: aws-lambda-sample
 
 provider:
   name: aws
-  runtime: python3.7
+  runtime: python3.6
   stage: dev
   region: eu-west-1
 
 functions:
   sample:
     handler: service.lambda_handler
-    name: Sample Lambda
+    name: sample-lambda
     description: Sample Lambda in Python
     memorySize: 128
+  httprequest:
+    handler: service.web_handler
+    name: web-handler-lambda
+    description: Pull data from website and return
+
+plugins:
+  - serverless-python-requirements
