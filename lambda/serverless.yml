@@ -24,8 +24,8 @@ provider:
   runtime: python3.7
 
 # you can overwrite defaults here
-#  stage: dev
-region: eu-west-2
+  stage: dev
+  region: eu-west-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
