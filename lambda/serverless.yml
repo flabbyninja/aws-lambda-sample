@@ -25,7 +25,7 @@ provider:
 
 # you can overwrite defaults here
 #  stage: dev
-#  region: us-east-1
+region: eu-west-2
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -57,7 +57,7 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
+  sample:
     handler: service.lambda_handler
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
