@@ -2,6 +2,7 @@
 .vscode
 venv
 frontend-wild
+node_modules
 .serverless
 .terraform
 *.tfstate
