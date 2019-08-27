@@ -9,6 +9,8 @@ provider:
 functions:
   sample:
     handler: service.lambda_handler
+    events:
+      - http: GET sample
     name: sample-lambda
     description: Sample Lambda in Python
     memorySize: 128
