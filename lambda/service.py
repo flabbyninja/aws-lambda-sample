@@ -45,7 +45,7 @@ def clean_param(p):
 def lambda_handler(event, context):
     logger.info('Log Level in environment: {}'.format(LOGLEVEL))
     qsp = event.get('queryStringParameters')
-    logger.info('Lambda called with queryStringParameters: {}'.format(qsp))
+    logger.debug('Lambda called with queryStringParameters: {}'.format(qsp))
     first_name, last_name, age = '', '', ''
 
     if qsp:
@@ -55,7 +55,7 @@ def lambda_handler(event, context):
 
     message = create_message(first_name, last_name, age)
     response = generate_lambda_proxy_response(200, message)
-    logger.info("Returning assembled message: {}".format(message))
+    logger.debug("Returning assembled message: {}".format(message))
     return response
 
 
