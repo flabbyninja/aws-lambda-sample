@@ -1,9 +1,11 @@
 import json
 import logging
 import requests
+import os
 
+LOGLEVEL = os.getenv('LOGLEVEL', 'WARNING')
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(LOGLEVEL)
 
 
 def construct_name(first_name, last_name):
@@ -41,6 +43,7 @@ def clean_param(p):
 
 
 def lambda_handler(event, context):
+    logger.info('Log Level in environment: {}'.format(LOGLEVEL))
     qsp = event.get('queryStringParameters')
     logger.info('Lambda called with queryStringParameters: {}'.format(qsp))
     first_name, last_name, age = '', '', ''

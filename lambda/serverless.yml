@@ -5,6 +5,8 @@ provider:
   runtime: python3.6
   stage: dev
   region: eu-west-1
+  environment:
+    LOGLEVEL: INFO
 
 functions:
   sample:
